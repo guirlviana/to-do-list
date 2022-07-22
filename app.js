@@ -1,9 +1,12 @@
 const express = require("express");
+const checklistRouter = require("./src/routes/checklist");
+require("./config/database");
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("My todo List");
-});
+app.use(express.json());
 
-app.listen(3000);
+app.use("/checklists", checklistRouter);
+app.listen(3000, () => {
+  console.log("started");
+});
