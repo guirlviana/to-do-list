@@ -6,9 +6,9 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     let checklist = await Checklist.find({});
-    res.status(200).json(checklist);
+    res.status(200).render("checklists/index", { checklists: checklist });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(422).render("pages/error", { error: "Lists not found" });
   }
 });
 
@@ -24,12 +24,12 @@ router.post("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    let checklist = await Checklist.find({ _id: req.params.id });
-    res.status(200).json(checklist);
+    let checklist = await Checklist.findOne({ _id: req.params.id });
+    console.log(checklist);
+    res.status(200).render("checklists/show", { checklist: checklist });
   } catch (error) {
-    res.status(422).json(error);
+    res.status(422).render("pages/error", { error: "Task lists not found" });
   }
-  res.send(req.params.id);
 });
 
 router.put("/:id", async (req, res) => {
@@ -40,10 +40,7 @@ router.put("/:id", async (req, res) => {
       { name },
       { new: true }
     );
-    res.status(200).json(checklist);
-  } catch (error) {
-    res.status(422).json(error);
-  }
+  } catch (error) {}
 });
 
 router.delete("/:id", async (req, res) => {
