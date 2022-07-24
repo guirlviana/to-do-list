@@ -12,13 +12,25 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  let { name } = req.body;
+router.get("/new", async (req, res) => {
   try {
-    let checklist = await Checklist.create({ name });
-    res.status(200).json(checklist);
+    let checklist = new Checklist();
+    res.status(200).render("checklists/new", { checklist: checklist });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(500).status("pages/error", { errors: "Error to load form" });
+  }
+});
+
+router.post("/", async (req, res) => {
+  let { name } = req.body.checklist;
+  let checklist = new Checklist({ name });
+  try {
+    await checklist.save();
+    res.redirect("/checklists");
+  } catch (error) {
+    res
+      .status(422)
+      .render("checklists/new", { checklists: { ...checklist, error } });
   }
 });
 
@@ -28,7 +40,7 @@ router.get("/:id", async (req, res) => {
     console.log(checklist);
     res.status(200).render("checklists/show", { checklist: checklist });
   } catch (error) {
-    res.status(422).render("pages/error", { error: "Task lists not found" });
+    res.status(500).render("pages/error", { error: "Task lists not found" });
   }
 });
 
