@@ -21,7 +21,6 @@ router.get("/new", async (req, res) => {
   }
 });
 router.put("/:id", async (req, res) => {
-  console.log("estou no put");
   let { name } = req.body.checklist;
   let checklist = await Checklist.findById(req.params.id);
   try {
