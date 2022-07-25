@@ -20,6 +20,31 @@ router.get("/new", async (req, res) => {
     res.status(500).status("pages/error", { errors: "Error to load form" });
   }
 });
+router.put("/:id", async (req, res) => {
+  console.log("estou no put");
+  let { name } = req.body.checklist;
+  let checklist = await Checklist.findById(req.params.id);
+  try {
+    await checklist.update({ name });
+    res.redirect("/checklists");
+  } catch (error) {
+    let errors = error.errors;
+    res
+      .status(422)
+      .render("checklists/edit", { checklist: { ...checklist, errors } });
+  }
+});
+
+router.get("/:id/edit", async (req, res) => {
+  try {
+    let checklist = await Checklist.findById(req.params.id);
+    res.status(200).render("checklists/edit", { checklist: checklist });
+  } catch (error) {
+    res.status(500).render("pages/error", {
+      error: "Error to view edit page",
+    });
+  }
+});
 
 router.post("/", async (req, res) => {
   let { name } = req.body.checklist;
@@ -42,17 +67,6 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     res.status(500).render("pages/error", { error: "Task lists not found" });
   }
-});
-
-router.put("/:id", async (req, res) => {
-  try {
-    let { name } = req.body;
-    let checklist = await Checklist.findByIdAndUpdate(
-      req.params.id,
-      { name },
-      { new: true }
-    );
-  } catch (error) {}
 });
 
 router.delete("/:id", async (req, res) => {
