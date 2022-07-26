@@ -1,5 +1,6 @@
 const express = require("express");
 const checklistDependentRoute = express.Router();
+const simpleRouter = express.Router();
 
 const Checklist = require("../models/checklist");
 const Task = require("../models/task");
@@ -11,7 +12,7 @@ checklistDependentRoute.get("/:id/tasks", async (req, res) => {
       .status(200)
       .render("tasks/new", { checklistId: req.params.id, task: task });
   } catch (error) {
-    res.status(422).render("pages/error", { error: "Error to load form" });
+    res.status(422).render("pages/error", { errors: "Error to load form" });
   }
 });
 
@@ -33,4 +34,22 @@ checklistDependentRoute.post("/:id/tasks/save", async (req, res) => {
   }
 });
 
-module.exports = { checklistDependent: checklistDependentRoute };
+simpleRouter.delete("/:id", async (req, res) => {
+  try {
+    let task = await Task.findByIdAndDelete(req.params.id);
+    let checklist = await Checklist.findById(task.checkList);
+    let taskToRemove = checklist.tasks.indexOf(task.id);
+    checklist.tasks.splice(taskToRemove, 1);
+    checklist.save();
+    res.redirect(`/checklists/${checklist.id}`);
+  } catch (error) {
+    res
+      .status(422)
+      .render("pages/error", { errors: "Could not be delete task" });
+  }
+});
+
+module.exports = {
+  checklistDependent: checklistDependentRoute,
+  simple: simpleRouter,
+};

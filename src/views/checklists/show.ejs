@@ -20,6 +20,11 @@ include('../layouts/menu') %>
             <div class="column is-four-fifths">
                 <input type="checkbox" /> <%= task.name %>
             </div>
+            <div class="column is-one-fifth">
+              <a href="/tasks/<%= task.id %>?_method=delete">             
+                <button class="button is-danger is-small">Remover</button>
+              </a>
+            </div>
         </div>
     <% }) %>
         
