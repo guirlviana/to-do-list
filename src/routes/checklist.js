@@ -63,7 +63,6 @@ router.get("/:id", async (req, res) => {
     let checklist = await Checklist.findOne({ _id: req.params.id }).populate(
       "tasks"
     );
-    console.log(checklist);
     res.status(200).render("checklists/show", { checklist: checklist });
   } catch (error) {
     res.status(500).render("pages/error", { error: "Task lists not found" });
