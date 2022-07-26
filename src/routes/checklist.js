@@ -60,7 +60,9 @@ router.post("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    let checklist = await Checklist.findOne({ _id: req.params.id });
+    let checklist = await Checklist.findOne({ _id: req.params.id }).populate(
+      "tasks"
+    );
     console.log(checklist);
     res.status(200).render("checklists/show", { checklist: checklist });
   } catch (error) {
