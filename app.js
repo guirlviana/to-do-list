@@ -6,7 +6,7 @@ const methodOverride = require("method-override");
 require("./config/database");
 
 const app = express();
-app.use(methodOverride("_method"));
+app.use(methodOverride("_method", { methods: ["POST", "GET"] }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
